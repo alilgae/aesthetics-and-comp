@@ -1,12 +1,16 @@
+let shapes = [];
+
 function setup() {
   createCanvas(400, 400);
+  addShape()
 }
 
 function draw() {
   background(0);
   strokeWeight(2);
-  for(let i = 0; i < 10000; i++) {
-    drawShape(createShape());
+  shapes.forEach(s => drawShape(s))
+  if(shapes.length < 10000){
+    addShape();
   }
 }
 
@@ -21,4 +25,8 @@ function createShape(){
 function drawShape(shape){
   fill(shape.c.r, shape.c.g, shape.c.b);
   circle(shape.x, shape.y, shape.d);
+}
+
+function addShape(){
+  shapes.push(createShape());
 }
