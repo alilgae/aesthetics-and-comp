@@ -1,17 +1,23 @@
 let shapes;
-let clearx;
-let cleary;
+let lowerDiameterBound;
+let upperDiameterBound;
 
 function setup() {
   createCanvas(400, 400);
   shapes = 0;
-  clearx=0;
-  cleary=-10;
+  lowerDiameterBound = 20;
+  upperDiameterBound = 40;
+  noStroke();
 }
 
 function draw() {
-  strokeWeight(2);
-  if(shapes < 100) drawShape(createShape())
+  if(lowerDiameterBound > 500) {
+    lowerDiameterBound = 20;
+    upperDiameterBound = 40;
+    shapes = 0;
+    clear();
+  }
+  if(shapes < 10000) drawShape(createShape())
   else animateClear()
 }
 
@@ -30,9 +36,8 @@ function drawShape(shape){
 }
 
 function animateClear() {
-  fill(0,0,0,20);
-  noStroke();
-  rect(clearx, cleary, 400, 10);
-  cleary++;
-  if(cleary > 400) cleary = -10;
+  fill(0,0,0,100);
+  circle(random(400), random(400), random(lowerDiameterBound, upperDiameterBound))
+  lowerDiameterBound+=5;
+  upperDiameterBound+=5;
 }
