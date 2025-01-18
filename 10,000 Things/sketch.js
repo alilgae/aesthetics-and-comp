@@ -2,6 +2,9 @@ let shapes;
 let lowerDiameterBound;
 let upperDiameterBound;
 
+// the number of circles drawn before clearing the screen
+const maxShapes = 10000;
+
 function setup() {
   createCanvas(400, 400);
   shapes = 0;
@@ -17,7 +20,7 @@ function draw() {
     shapes = 0;
     clear();
   }
-  if(shapes < 10000) drawShape(createShape())
+  if(shapes < maxShapes) drawShape(createShape())
   else animateClear()
 }
 
