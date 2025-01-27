@@ -1,7 +1,7 @@
 let xScale = 0.015;
 let yScale = 0.02;
 
-let gap = 10;
+let gap = 15;
 let offset = 0;
 
 const colors = [200, 0, 110, 325, 270, 165, 25];
@@ -11,7 +11,7 @@ let desireHue;
 let startingHue;
 
 let lineD
-const lineWidths = [15, 25, 50, 75]
+const lineWidths = [15, 25, 25, 50, 75]
 let lines = []
 let currentLine = []
 let lineCount = 0;
