@@ -10,30 +10,38 @@ let hue;
 let desireHue;
 let startingHue;
 
-let lineD
-const lineWidths = [15, 25, 25, 50, 75]
+let lineSize
+const lineWidths = [5, 10, 15, 25, 50, 100]
 let lines = []
 let currentLine = []
 let lineCount = 0;
 const lineColors = [15, 75, 90, 120, 140, 160, 175, 190, 215, 240, 250, 270, 285, 300, 315, 345]
 let lineColor
+let lineLayer;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB)
+  noStroke();
+
   timer = 0;
   startingHue = colors[floor(random(colors.length))];
   desireHue = getDesireHue()
   hue = startingHue
-  lineD = lineWidths[floor(random(lineWidths.length))]
-  let firstCircle = addLine()
-  accentLine(firstCircle.x, firstCircle.y)
+
+  lineSize = lineWidths[floor(random(lineWidths.length))]
+  let firstLine = addLine()
+  accentLine(firstLine.x, firstLine.y)
   lineColor = lineColors[floor(random(lineColors.length))]
+
+  lineLayer = createGraphics(width, height)
+  lineLayer.colorMode(HSB)
+  lineLayer.stroke(lineColor, 25, 100, 2 / lineSize)
+  lineLayer.strokeWeight(lineSize)
 }
 
 function draw() {
-  background(230, 100, 20);
-  noStroke();
+  background(230, 70, 20);
   timer += deltaTime / 5000
   if(timer <= 1) {
     hue = lerp(startingHue, desireHue, timer)
@@ -53,7 +61,15 @@ function draw() {
       circle(x, y, diameter);
     }
   }
+
+  //overlayed accent line
   accentLine(currentLine[currentLine.length-1].x, currentLine[currentLine.length-1].y)
+
+  lineLayer.line(currentLine[currentLine.length-1].x, currentLine[currentLine.length-1].y, 
+    currentLine[currentLine.length-2].x, currentLine[currentLine.length-2].y)
+
+
+  image(lineLayer, 0, 0)
 
 }
 
@@ -66,31 +82,18 @@ function getDesireHue() {
 }
 
 function accentLine(x, y) {
-  stroke(lineColor, 25, 100, 2 / lineD)
-  strokeWeight(lineD)
-  if(y > 0) {
+  if(y < 0) {
+    currentLine = []
+    let line = addLine()
+    x = line.x
+    y = line.y
+    currentLine.push({x, y})
+  } else {
     x += (floor(random(0, 2)) - 0.5) * 25
     y += (floor(random(0, 2))) * -10
-  } else {
-    lines.push(currentLine)
-    lineCount++
-    currentLine = []
-    let circle = addLine()
-    x = circle.x
-    y = circle.y
   }
   
   currentLine.push({x, y})
-
-  for(let j = 0; j < lines.length; j++) {
-    for(let i = 1; i < lines[j].length; i++) {
-      line(lines[j][i].x, lines[j][i].y, lines[j][i-1].x, lines[j][i-1].y)
-    }
-  }
-  
-  for(let i = 1; i < currentLine.length; i++) {
-    line(currentLine[i].x, currentLine[i].y, currentLine[i-1].x, currentLine[i-1].y)
-  }
 }
 
 function addLine() {
