@@ -1,7 +1,7 @@
 let xScale = 0.015;
 let yScale = 0.02;
 
-let gap = 15;
+let gap = 20;
 let offset = 0;
 
 const colors = [200, 0, 110, 325, 270, 165, 25];
@@ -11,7 +11,7 @@ let desireHue;
 let startingHue;
 
 let lineSize
-const lineWidths = [5, 10, 15, 25, 50, 100]
+const lineWidths = [5, 10, 15, 20, 25, 50]
 let lines = []
 let currentLine = []
 let lineCount = 0;
@@ -36,7 +36,7 @@ function setup() {
 
   lineLayer = createGraphics(width, height)
   lineLayer.colorMode(HSB)
-  lineLayer.stroke(lineColor, 25, 100, 2 / lineSize)
+  lineLayer.stroke(lineColor, 25, 100, 4 / lineSize)
   lineLayer.strokeWeight(lineSize)
 }
 
@@ -61,6 +61,7 @@ function draw() {
       circle(x, y, diameter);
     }
   }
+  filter(BLUR, 1.75)
 
   //overlayed accent line
   accentLine(currentLine[currentLine.length-1].x, currentLine[currentLine.length-1].y)
@@ -70,6 +71,7 @@ function draw() {
 
 
   image(lineLayer, 0, 0)
+
 
 }
 
