@@ -101,3 +101,7 @@ function accentLine(x, y) {
 function addLine() {
   return {x: random(100, width-100), y: random(height-100, height)}
 }
+
+// suggestion: randomize if it starts & travels up or down
+// suggestion: chance to change color when it resets 
+// based on others: create a class for line? 
