@@ -1,5 +1,5 @@
 const NOISE_SCALE = 0.005
-const LINE_GAP = 7.5 // range 1 -> 7.5
+const LINE_GAP = 5 // 1 -> 10 range
 const WEIGHT = 75
 
 const CENTER = {x: 400, y: 300}
@@ -7,6 +7,7 @@ const SPEED = 0.25
 const MIN_LINE_LENGTH = 10
 const MAX_LINE_LENGTH = 50
 let lineLength = 30
+const RING_WEIGHT = 75
 
 let field = []
 let pathTimer = 0;
@@ -28,7 +29,7 @@ function draw() {
   let ringCount = 0
   let deltaR = 0
   for(let r = 50; r < 500; r+=deltaR){
-    deltaR = noise(r * 1000)*75
+    deltaR = noise(r * 1000)*RING_WEIGHT
     let currField = []
     for(let i = 0; i < 360; i+=map(LINE_GAP, 0, TAU*r, 0, 360)) {
       let xPos = (CENTER.x + (cos(i) * (lineLength + r)))
