@@ -1,36 +1,63 @@
 const NOISE_SCALE = 0.005
-const LINE_LENGTH = 25
 const LINE_GAP = 7.5 // range 1 -> 7.5
 const WEIGHT = 75
 
 const CENTER = {x: 400, y: 300}
-const RADIUS = 20;
+const SPEED = 0.25
+const MIN_LINE_LENGTH = 10
+const MAX_LINE_LENGTH = 50
+let lineLength = 30
 
 let field = []
+let pathTimer = 0;
+let fieldIndex = 0
+const TIME_SCALE = 500
 
 function setup() {
   createCanvas(800, 600);
   angleMode(DEGREES)
-  strokeWeight(5)
-
-  for(let r = RADIUS; r < 600; r+=RADIUS){
-    for(let i = 0; i < 360; i+=(LINE_GAP * 360)/(TAU * r)) {
-      let xPos = (CENTER.x + (cos(i) * (LINE_LENGTH + r)))
-      let yPos = (CENTER.y + (sin(i) * (LINE_LENGTH + r)))
-      let noiseDisplacement = map(noise(xPos*NOISE_SCALE, yPos*NOISE_SCALE), 0, 1, -WEIGHT, WEIGHT)
-      
-      field.push({x: xPos + noiseDisplacement, y: yPos + noiseDisplacement })
-    }
-  }
+  colorMode(HSB)
 }
 
 function draw() {
-  background(255);
+  background(0);
+  strokeWeight(2)
+  stroke(0, 0, 100)
+  field.length = 0
 
-  //plot center for visualizing
-  // point(CENTER.x, CENTER.y)
+  let ringCount = 0
+  let deltaR = 0
+  for(let r = 50; r < 500; r+=deltaR){
+    deltaR = noise(r * 1000)*75
+    let currField = []
+    for(let i = 0; i < 360; i+=map(LINE_GAP, 0, TAU*r, 0, 360)) {
+      let xPos = (CENTER.x + (cos(i) * (lineLength + r)))
+      let yPos = (CENTER.y + (sin(i) * (lineLength + r)))
+      let noiseDisplacement = map(noise(xPos*NOISE_SCALE, yPos*NOISE_SCALE), 0, 1, -WEIGHT, WEIGHT)
+      
+      currField.push({x: xPos + noiseDisplacement, y: yPos + noiseDisplacement }) 
+      point(xPos + noiseDisplacement, yPos + noiseDisplacement)
+    }
+    ringCount++
+    field.push(currField)
+  }
 
-  //draw circular field
-  field.forEach(l => point(l.x, l.y))
+  let flowField = field[fieldIndex]
 
+  stroke(getColor(), 100, 100, 0.75)
+  strokeWeight(10)
+  line(flowField[pathTimer % flowField.length].x, flowField[pathTimer % flowField.length].y, 
+    flowField[(pathTimer+1) % flowField.length].x, flowField[(pathTimer+1) % flowField.length].y)
+
+  pathTimer++
+
+  lineLength = map(sin(frameCount * SPEED), -1, 1, MIN_LINE_LENGTH, MAX_LINE_LENGTH)
+}
+
+function mousePressed() {
+  fieldIndex = (fieldIndex+1) % field.length
+}
+
+function getColor() {
+  return lerp(0, 360, (pathTimer / TIME_SCALE)) % 360
 }
