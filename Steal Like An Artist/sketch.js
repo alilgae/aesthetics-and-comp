@@ -1,7 +1,10 @@
 const PIXEL_SCALE = 5
 const SEED_POINTS = []
-const NUM_POINTS = 7;
+const NUM_POINTS = 24;
 const N_INDEX = 0;
+
+let timer = 0
+let zScale = 1;
 
 function setup() {
   createCanvas(400, 400);
@@ -9,30 +12,39 @@ function setup() {
   for(let i = 0; i < NUM_POINTS; i++) {
     let x = random(width)
     let y = random(height)
-    SEED_POINTS.push({x, y})
+    let z = random(width) 
+    SEED_POINTS.push({x, y, z})
   }
-
-  noLoop()
   noStroke()
+  colorMode(HSB)
 }
 
 function draw() {
+  timer+=zScale
   for(let x = 0; x < width; x+=PIXEL_SCALE) {
     for(let y = 0; y < height; y+=PIXEL_SCALE){
       let distances = []
       for(let i = 0; i < NUM_POINTS; i++) {
-        distances.push(dist(x, y, SEED_POINTS[i].x, SEED_POINTS[i].y))
+        let seedPoint = SEED_POINTS[i]
+        let z = (timer)
+        distances.push(dist(x, y, z, seedPoint.x, seedPoint.y, seedPoint.z))
       }
       let sorted = sort(distances)
-      let noise = sorted[N_INDEX]
+      let hue = map(sorted[N_INDEX], 0, width/2, 0, 360)
+      let saturation  = map(sorted[N_INDEX + 1], 0, width/2, 25, 80)
+      let brightness = map(sorted[N_INDEX + 2], 0, width/2, 50, 100)
 
-      fill(noise)
+      fill(hue, saturation, brightness)
       rect(x, y, PIXEL_SCALE, PIXEL_SCALE)
     }
   }
 
-  fill('pink')
-  SEED_POINTS.forEach(p => circle(p.x, p.y, 10))
+  if(timer > width) zScale = -1
+  if(timer < 0) zScale = 1
+
+  // show the points: 
+  // fill('pink')
+  // SEED_POINTS.forEach(p => circle(p.x, p.y, 10))
 }
 
 // Inspo: 
