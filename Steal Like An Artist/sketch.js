@@ -2,9 +2,13 @@ const PIXEL_SCALE = 5
 const SEED_POINTS = []
 const NUM_POINTS = 24;
 const N_INDEX = 0;
+// green, blue, yellow, pink, teal, purple
+const HUE_RANGE = [{min: 65, max: 125}, {min: 155, max: 250}, {min: 25, max: 50}, 
+  {min: 285, max: 360}, {min: 135, max: 200}, {min: 235, max: 275}]
 
 let timer = 0
 let zScale = 1;
+let hueRange;
 
 function setup() {
   createCanvas(400, 400);
@@ -17,10 +21,13 @@ function setup() {
   }
   noStroke()
   colorMode(HSB)
+
+  hueRange = HUE_RANGE[floor(random(0, HUE_RANGE.length))]
 }
 
 function draw() {
   timer+=zScale
+
   for(let x = 0; x < width; x+=PIXEL_SCALE) {
     for(let y = 0; y < height; y+=PIXEL_SCALE){
       let distances = []
@@ -30,9 +37,9 @@ function draw() {
         distances.push(dist(x, y, z, seedPoint.x, seedPoint.y, seedPoint.z))
       }
       let sorted = sort(distances)
-      let hue = map(sorted[N_INDEX], 0, width/2, 0, 360)
-      let saturation  = map(sorted[N_INDEX + 1], 0, width/2, 25, 80)
-      let brightness = map(sorted[N_INDEX + 2], 0, width/2, 50, 100)
+      let hue = map(sorted[N_INDEX], 0, width/3, hueRange.min, hueRange.max)
+      let saturation  = map(sorted[N_INDEX + 1], 0, width/2, 25, 50)
+      let brightness = map(sorted[N_INDEX + 2], 0, width/2, 25, 100)
 
       fill(hue, saturation, brightness)
       rect(x, y, PIXEL_SCALE, PIXEL_SCALE)
