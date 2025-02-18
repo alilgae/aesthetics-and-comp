@@ -1,9 +1,9 @@
 const PIXEL_SCALE = 5
+const FULLSCREEN_SCALE = 10
 const SEED_POINTS = []
 const NUM_POINTS = 24;
 const N_INDEX = 0;
 const SPEED = 1.5
-const SIZE = 400
 
 // green, blue, yellow, pink, teal, purple
 const HUE_RANGE = [{min: 65, max: 125}, {min: 155, max: 250}, {min: 25, max: 50}, 
@@ -14,26 +14,34 @@ let hueRange;
 let zRange;
 
 function setup() {
-  createCanvas(SIZE, SIZE);
+  createCanvas(400, 400);
 
-  for(let i = 0; i < NUM_POINTS; i++) {
-    let x = random(SIZE)
-    let y = random(SIZE)
-    let z = random(SIZE) 
-    SEED_POINTS.push({x, y, z})
-  }
   noStroke()
   colorMode(HSB)
 
   hueRange = HUE_RANGE[floor(random(0, HUE_RANGE.length))]
-  zRange = SIZE / 2
+
+  init()
+}
+
+function init() {
+  SEED_POINTS.length = 0;
+
+  for(let i = 0; i < NUM_POINTS; i++) {
+    let x = random(width)
+    let y = random(height)
+    let z = random(width) 
+    SEED_POINTS.push({x, y, z})
+  }
+
+  zRange = width / 2
 }
 
 function draw() {
   currentZ+=(deltaTime / 100) * SPEED
 
-  for(let x = 0; x < SIZE; x+=PIXEL_SCALE) {
-    for(let y = 0; y < SIZE; y+=PIXEL_SCALE){
+  for(let x = 0; x < width; x+=fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE) {
+    for(let y = 0; y < height; y+=fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE){
       let sorted = generateNoise(x, y)
 
       let hue = map(sorted[N_INDEX], 0, zRange, hueRange.min, hueRange.max)
@@ -41,7 +49,7 @@ function draw() {
       let brightness = map(sorted[N_INDEX + 2], 0, zRange, 25, 100)
 
       fill(hue, saturation, brightness)
-      rect(x, y, PIXEL_SCALE, PIXEL_SCALE)
+      rect(x, y, fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE, fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE)
     }
   }
 
@@ -69,10 +77,24 @@ function updatePoints() {
       // add new point at higher z
       point.x += random(-50, 50)
       point.y += random(-50, 50)
-      point.z += random(SIZE, SIZE * 1.5)
+      point.z += random(width, width * 1.5)
       SEED_POINTS.push(point)
     }
   }
+}
+
+function mousePressed() {
+  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    const fs = fullscreen();
+    fullscreen(!fs);
+  }
+}
+
+function windowResized() {
+  const fs = fullscreen()
+  fs ? resizeCanvas(windowWidth, windowHeight) : resizeCanvas(400, 400)
+
+  init()
 }
 
 // Inspo: 
