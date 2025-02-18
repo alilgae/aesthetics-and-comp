@@ -41,7 +41,8 @@ function init() {
 }
 
 function draw() {
-  currentZ+=(deltaTime / 100) * SPEED
+  let speed = (fs ? 3 : 0.75 ) * SPEED
+  currentZ+=(deltaTime / 100) * speed
 
   for(let x = 0; x < width; x+=fs ? FULLSCREEN_SCALE : PIXEL_SCALE) {
     for(let y = 0; y < height; y+=fs ? FULLSCREEN_SCALE : PIXEL_SCALE){
