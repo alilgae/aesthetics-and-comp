@@ -1,17 +1,19 @@
-const PIXEL_SCALE = 5
-const FULLSCREEN_SCALE = 10
+const PIXEL_SCALE = 10 // change resolution - minimum 5
+const FULLSCREEN_SCALE = PIXEL_SCALE * 2
+const SPEED = .15 * FULLSCREEN_SCALE
+
 const SEED_POINTS = []
-const NUM_POINTS = 24;
 const N_INDEX = 0;
-const SPEED = 1.5
+const NUM_POINTS = 24
 
 // green, blue, yellow, pink, teal, purple
 const HUE_RANGE = [{min: 65, max: 125}, {min: 155, max: 250}, {min: 25, max: 50}, 
   {min: 285, max: 360}, {min: 135, max: 200}, {min: 235, max: 275}]
 
-let currentZ = 0
+let currentZ
 let hueRange;
 let zRange;
+let fs = false
 
 function setup() {
   createCanvas(400, 400);
@@ -25,8 +27,9 @@ function setup() {
 }
 
 function init() {
-  SEED_POINTS.length = 0;
+  SEED_POINTS.length = 0
 
+  currentZ = 0;
   for(let i = 0; i < NUM_POINTS; i++) {
     let x = random(width)
     let y = random(height)
@@ -40,8 +43,8 @@ function init() {
 function draw() {
   currentZ+=(deltaTime / 100) * SPEED
 
-  for(let x = 0; x < width; x+=fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE) {
-    for(let y = 0; y < height; y+=fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE){
+  for(let x = 0; x < width; x+=fs ? FULLSCREEN_SCALE : PIXEL_SCALE) {
+    for(let y = 0; y < height; y+=fs ? FULLSCREEN_SCALE : PIXEL_SCALE){
       let sorted = generateNoise(x, y)
 
       let hue = map(sorted[N_INDEX], 0, zRange, hueRange.min, hueRange.max)
@@ -49,7 +52,7 @@ function draw() {
       let brightness = map(sorted[N_INDEX + 2], 0, zRange, 25, 100)
 
       fill(hue, saturation, brightness)
-      rect(x, y, fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE, fullscreen() ? FULLSCREEN_SCALE : PIXEL_SCALE)
+      rect(x, y, fs ? FULLSCREEN_SCALE : PIXEL_SCALE, fs ? FULLSCREEN_SCALE : PIXEL_SCALE)
     }
   }
 
@@ -84,17 +87,20 @@ function updatePoints() {
 }
 
 function mousePressed() {
-  if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-    const fs = fullscreen();
-    fullscreen(!fs);
-  }
+  fs = !fs
+  fullscreen(fs);
 }
 
 function windowResized() {
-  const fs = fullscreen()
+  let isFullscreen = fullscreen()
+  if(isFullscreen !== fs) fs = isFullscreen
   fs ? resizeCanvas(windowWidth, windowHeight) : resizeCanvas(400, 400)
 
   init()
+}
+
+function keyPressed() {
+  hueRange = HUE_RANGE[floor(random(0, HUE_RANGE.length))]
 }
 
 // Inspo: 
