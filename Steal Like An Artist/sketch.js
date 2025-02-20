@@ -113,3 +113,5 @@ function keyPressed() {
 // https://editor.p5js.org/andrea270872/sketches/z8yozdOnl 
 
 // Worley Noise: https://www.youtube.com/watch?v=4066MndcyCk 
+
+// Suggestion: exponential map darkness to make blacks darker
