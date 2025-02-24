@@ -1,5 +1,5 @@
 const SEED = 'FX'
-const NUM_GENERATIONS = 9
+const NUM_GENERATIONS = 7
 const NUM_SYSTEMS = 9
 const ROWS = 3
 const COLS = 3
@@ -21,6 +21,7 @@ const DRAWING_RULES = {
 
     line(system.x, system.y, endX, endY)
 
+    // wrapping to grid 
     if(endX < 0) endX += (floor(width / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
     else if (endX > width) endX -= (floor(width / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
     if(endY < 0) endY += (floor(height / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
@@ -43,7 +44,8 @@ const DRAWING_RULES = {
 let systems = [];
 
 function getTransformation() {
-  let index = floor(random(TRANSFORMATIONS['X'].length))
+  let index = floor(random(TRANSFORMATIONS['X'].length)) // can view specific system types 
+  
   return {
     'X': TRANSFORMATIONS['X'][index],
     'Y': TRANSFORMATIONS['Y'][index],
@@ -60,7 +62,7 @@ function setup() {
 
   gridBackground()
 
-  strokeWeight(2)
+  strokeWeight(3)
   for(let i = 0; i < NUM_SYSTEMS; i++){
     systems.push(initSystem(i))
   }
@@ -97,10 +99,10 @@ function initSystem(index) {
   let centerX = random(width * (col) / (COLS), width * (col + 1) / (COLS))
   let centerY = random(height * (row) / (ROWS), height * (row + 1) / (ROWS))
 
+  // snap to grid
   centerX = floor(centerX / LINE_LENGTH) * LINE_LENGTH
   centerY = floor(centerY / LINE_LENGTH) * LINE_LENGTH
 
-  console.log(width / 10)
   let system = {
     axiom,
     index: 0,
@@ -112,14 +114,9 @@ function initSystem(index) {
   }
 
   return system;
-
 }
 
 function draw() {
-  // stroke(hue, 100, 75)
-  // DRAWING_RULES[axiom[index]]()
-  // index = (index+1) % axiom.length
-
   for (let system of systems) {
     stroke(system.hue % 360, 100, 75);
     const i = system.axiom[system.index];
