@@ -1,7 +1,7 @@
 const SEED = 'FX'
-const NUM_GENERATIONS = 7
-const NUM_SYSTEMS = 6
-const ROWS = 2
+const NUM_GENERATIONS = 9
+const NUM_SYSTEMS = 9
+const ROWS = 3
 const COLS = 3
 const LINE_LENGTH = 25
 
@@ -16,10 +16,15 @@ const TRANSFORMATIONS = {
 }
 const DRAWING_RULES = {
   'F': (system) => {   
-    const endX = system.x + cos(system.angle) * system.lineLength
-    const endY = system.y + sin(system.angle) * system.lineLength
+    let endX = system.x + cos(system.angle) * system.lineLength
+    let endY = system.y + sin(system.angle) * system.lineLength
 
     line(system.x, system.y, endX, endY)
+
+    if(endX < 0) endX += (floor(width / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
+    else if (endX > width) endX -= (floor(width / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
+    if(endY < 0) endY += (floor(height / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
+    else if(endY > height) endY -= (floor(height / LINE_LENGTH) * LINE_LENGTH) + LINE_LENGTH
 
     system.x = endX
     system.y = endY
@@ -89,14 +94,8 @@ function initSystem(index) {
 
   let col = (index % 3)
   let row = (index % 2)
-  let centerX = random(width * col / COLS, width * (col + 1) / COLS)
-  let centerY = random(height * row / ROWS, height * (row + 1) / ROWS)
-
-  if(centerX < width / 10) centerX += width / 20
-  else if (centerX > width - (width / 10)) centerX -= width / 20
-
-  if(centerY < height / 10) centerY += height / 20
-  else if (centerY > height - (height / 10)) centerY -= height / 20
+  let centerX = random(width * (col) / (COLS), width * (col + 1) / (COLS))
+  let centerY = random(height * (row) / (ROWS), height * (row + 1) / (ROWS))
 
   centerX = floor(centerX / LINE_LENGTH) * LINE_LENGTH
   centerY = floor(centerY / LINE_LENGTH) * LINE_LENGTH
