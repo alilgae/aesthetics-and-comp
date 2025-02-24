@@ -3,7 +3,7 @@ const NUM_GENERATIONS = 7
 const NUM_SYSTEMS = 6
 const ROWS = 2
 const COLS = 3
-const LINE_LENGTH = 20
+const LINE_LENGTH = 25
 
 const TRANSFORMATIONS = {
   'X': ['X+YF+', 'XF+YF+', 'XX+YF+', 'F+Y', 'X++YF-F', '-FX-Y+', 'X+FX-Y', 'X+FX-FY', 
@@ -62,7 +62,8 @@ function setup() {
 }
 
 function gridBackground() {
-  stroke(0, 0, 50, 0.25)
+  background(240, 75, 20)
+  stroke(0, 0, 70, 0.25)
   strokeWeight(0.5)
 
   for(let x = 0; x < width; x+=LINE_LENGTH){
@@ -76,6 +77,7 @@ function gridBackground() {
 function initSystem(index) {
   let axiom = `${SEED}`
   const transformation = getTransformation()
+  const hue = floor(random(0, 360))
 
   for(let i = 0; i < NUM_GENERATIONS; i++) {
     let newString = ""
@@ -90,11 +92,11 @@ function initSystem(index) {
   let centerX = random(width * col / COLS, width * (col + 1) / COLS)
   let centerY = random(height * row / ROWS, height * (row + 1) / ROWS)
 
-  if(centerX < width / 10) centerX += width / 10
-  else if (centerX > width - (width / 10)) centerX -= width / 10
+  if(centerX < width / 10) centerX += width / 20
+  else if (centerX > width - (width / 10)) centerX -= width / 20
 
-  if(centerY < height / 10) centerY += height / 10
-  else if (centerY > height - (height / 10)) centerY -= height / 10
+  if(centerY < height / 10) centerY += height / 20
+  else if (centerY > height - (height / 10)) centerY -= height / 20
 
   centerX = floor(centerX / LINE_LENGTH) * LINE_LENGTH
   centerY = floor(centerY / LINE_LENGTH) * LINE_LENGTH
@@ -107,7 +109,7 @@ function initSystem(index) {
     y: centerY,
     angle: 0,
     lineLength: LINE_LENGTH,
-    hue: 0,
+    hue: hue,
   }
 
   return system;
