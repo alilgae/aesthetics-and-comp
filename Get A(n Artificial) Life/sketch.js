@@ -2,6 +2,15 @@ const PIXEL_SCALE = 15
 const GRID_SIZE = 40
 
 let grid;
+let baseHue;
+
+const PATTERNS = {
+  'Block': drawBlock, 
+  'Beehive': drawBeehive, 
+  'Loaf': drawLoaf, 
+  'Boat': drawBoat, 
+  'Tub': drawTub,
+}
 
 function setup()  {
   createCanvas(GRID_SIZE * PIXEL_SCALE, GRID_SIZE * PIXEL_SCALE)
@@ -13,6 +22,8 @@ function setup()  {
       grid[i][j] = floor(random(2))
     }
   }
+
+  baseHue = floor(random(360))
 }
 
 function create2DArray(cols, rows) {
@@ -31,7 +42,7 @@ function draw() {
     for(let j = 0; j < GRID_SIZE; j++){
       let x = i * PIXEL_SCALE
       let y = j * PIXEL_SCALE
-      let c = grid[i][j] == 1 ? 340 : 210
+      let c = grid[i][j] == 1 ? baseHue : (baseHue + 90) % 360
       fill(c, 100, 100)
       rect(x, y, PIXEL_SCALE, PIXEL_SCALE)
     }
@@ -86,12 +97,64 @@ function getMouseGridLoc() {
   let y = mouseY
 
   let loc = {x: -1, y: -1}
-  if(x < 0 || x > width) return
-  if(y < 0 || y > height) return
+  if(x < 0 || x > width - PIXEL_SCALE/2) return
+  if(y < 0 || y > height - PIXEL_SCALE/2) return
   if(x == 0 && y == 0) return
 
   loc.x = floor(x / PIXEL_SCALE)
   loc.y = floor(y / PIXEL_SCALE)
 
   return loc
+}
+
+function mousePressed() {
+  let mouseLocation = getMouseGridLoc()
+  if(mouseLocation) generatePattern(grid, mouseLocation.x, mouseLocation.y)
+}
+
+function generatePattern(grid, x, y) {
+  let patterns = Object.keys(PATTERNS)
+  let index = floor(random(patterns.length))
+  PATTERNS[patterns[index]](grid, x, y)
+}
+
+function drawBlock(grid, x, y) {
+  grid[x][y] = 1
+  if(x + 1 < GRID_SIZE) grid[x+1][y] = 1
+  if(y + 1 < GRID_SIZE) grid[x][y+1] = 1
+  if(x + 1 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+1][y+1] = 1
+}
+
+function drawBeehive(grid, x, y) {
+  grid[x][y] = 1
+  if(x + 1 < GRID_SIZE && y - 1 > 0) grid[x+1][y - 1] = 1 
+  if(x + 2 < GRID_SIZE && y - 1 > 0) grid[x+2][y - 1] = 1 
+  if(x + 1 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+1][y + 1] = 1 
+  if(x + 2 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+2][y + 1] = 1 
+  if(x + 3 < GRID_SIZE) grid[x+3][y] = 1
+}
+
+function drawLoaf(grid, x, y) {
+  grid[x][y] = 1
+  if(x + 1 < GRID_SIZE && y - 1 > 0) grid[x+1][y-1] = 1
+  if(x + 1 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+1][y+1] = 1
+  if(x + 2 < GRID_SIZE && y - 1 > 0) grid[x+2][y-1] = 1
+  if(x + 2 < GRID_SIZE && y + 2 < GRID_SIZE) grid[x+2][y+2] = 1
+  if(x + 3 < GRID_SIZE) grid[x+3][y] = 1
+  if(x + 3 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+3][y+1] = 1
+}
+
+function drawBoat(grid, x, y) {
+  grid[x][y] = 1
+  if(x + 1 < GRID_SIZE) grid[x+1][y] = 1
+  if(y + 1 < GRID_SIZE) grid[x][y+1] = 1
+  if(x + 2 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+2][y+1] = 1
+  if(x + 1 < GRID_SIZE && y + 2 < GRID_SIZE) grid[x+1][y+2] = 1
+}
+
+function drawTub(grid, x, y){
+  grid[x][y] = 1
+  if(x - 1 > 0 && y + 1 < GRID_SIZE) grid[x-1][y+1] = 1
+  if(x + 1 < GRID_SIZE) grid[x+1][y+1] = 1
+  if(y + 2 < GRID_SIZE) grid[x][y+2] = 1
 }
