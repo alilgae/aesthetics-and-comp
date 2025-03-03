@@ -28,7 +28,7 @@ function setup()  {
     }
   }
 
-  baseHue = floor(random(360))
+  baseHue = floor(random(130, 301))
 }
 
 function create2DArray(cols, rows) {
@@ -41,14 +41,12 @@ function create2DArray(cols, rows) {
 }
 
 function draw() {
-  // background(220)
-
   for(let i = 0; i < GRID_SIZE; i++){
     for(let j = 0; j < GRID_SIZE; j++){
       let x = i * PIXEL_SCALE
       let y = j * PIXEL_SCALE
-      let c = grid[i][j] == 1 ? baseHue : (baseHue + 90) % 360
-      fill(c, 60, 90)
+      let c = grid[i][j] == 1 ? baseHue : (baseHue + 55) % 360
+      fill(c, 90, 90)
       rect(x, y, PIXEL_SCALE, PIXEL_SCALE)
     }
   }
