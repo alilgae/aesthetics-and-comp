@@ -10,12 +10,17 @@ const PATTERNS = {
   'Loaf': drawLoaf, 
   'Boat': drawBoat, 
   'Tub': drawTub,
+  'Blinker': drawBlinker,
+  'Toad': drawToad,
+  'Beacon': drawBeacon,
 }
 
 function setup()  {
   createCanvas(GRID_SIZE * PIXEL_SCALE, GRID_SIZE * PIXEL_SCALE)
   colorMode(HSB)
   noStroke()
+  frameRate(10)
+
   grid = create2DArray(GRID_SIZE, GRID_SIZE)
   for(let i = 0; i < GRID_SIZE; i++){
     for(let j = 0; j < GRID_SIZE; j++){
@@ -43,7 +48,7 @@ function draw() {
       let x = i * PIXEL_SCALE
       let y = j * PIXEL_SCALE
       let c = grid[i][j] == 1 ? baseHue : (baseHue + 90) % 360
-      fill(c, 100, 100)
+      fill(c, 60, 90)
       rect(x, y, PIXEL_SCALE, PIXEL_SCALE)
     }
   }
@@ -110,6 +115,8 @@ function getMouseGridLoc() {
 function mousePressed() {
   let mouseLocation = getMouseGridLoc()
   if(mouseLocation) generatePattern(grid, mouseLocation.x, mouseLocation.y)
+  // if(mouseLocation) drawBeacon(grid, mouseLocation.x, mouseLocation.y)
+
 }
 
 function generatePattern(grid, x, y) {
@@ -157,4 +164,58 @@ function drawTub(grid, x, y){
   if(x - 1 > 0 && y + 1 < GRID_SIZE) grid[x-1][y+1] = 1
   if(x + 1 < GRID_SIZE) grid[x+1][y+1] = 1
   if(y + 2 < GRID_SIZE) grid[x][y+2] = 1
+}
+
+function drawBlinker(grid, x, y) {
+  grid[x][y] = 1
+
+  // no space horizontal 
+  if(x - 1 < 0 || x + 1 > GRID_SIZE) {
+    // only space vertical
+    if(y - 1 > 0 && y + 1 < GRID_SIZE) {
+      grid[x][y-1] = 1
+      grid[x][y+1] = 1
+    }
+  }
+  // no space vertical 
+  if(y - 1 < 0 || y + 1 > GRID_SIZE) {
+    // only space horizontal
+    if(x - 1 > 0 && x + 1 < GRID_SIZE) {
+      grid[x-1][y] = 1
+      grid[x+1][y] = 1
+    }
+  }
+  // space either way 
+  else {
+    let direction = floor(random(2))
+    if(direction == 0){
+      grid[x][y-1] = 1
+      grid[x][y+1] = 1
+    }
+    else {
+      grid[x-1][y] = 1
+      grid[x+1][y] = 1
+    }
+  }
+}
+
+function drawToad(grid, x, y) {
+  grid[x][y] = 1
+  if(x + 1 < GRID_SIZE) grid[x+1][y] = 1
+  if(x + 2 < GRID_SIZE) grid[x+2][y] = 1
+  if(x + 1 < GRID_SIZE && y - 1 > 0) grid[x+1][y-1] = 1
+  if(x + 2 < GRID_SIZE && y - 1 > 0) grid[x+2][y-1] = 1
+  if(x + 3 < GRID_SIZE && y - 1 > 0) grid[x+3][y-1] = 1
+}
+
+function drawBeacon(grid, x, y) {
+  grid[x][y] = 1
+  if(x + 1 < GRID_SIZE) grid[x+1][y] = 1
+  if(y + 1 < GRID_SIZE) grid[x][y+1] = 1
+  if(x + 1 < GRID_SIZE && y + 1 < GRID_SIZE) grid[x+1][y+1] = 1
+
+  if(x + 2 < GRID_SIZE && y + 2 < GRID_SIZE) grid[x+2][y+2] = 1
+  if(x + 3 < GRID_SIZE && y + 2 < GRID_SIZE) grid[x+3][y+2] = 1
+  if(x + 2 < GRID_SIZE && y + 3 < GRID_SIZE) grid[x+2][y+3] = 1
+  if(x + 3 < GRID_SIZE && y + 3 < GRID_SIZE) grid[x+3][y+3] = 1
 }
