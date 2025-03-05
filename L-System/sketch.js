@@ -1,9 +1,13 @@
+const WINDOW_SKETCH = true
+
 const SEED = 'FX'
 const NUM_GENERATIONS = 7
 const NUM_SYSTEMS = 9
-const ROWS = 3
-const COLS = 3
-const LINE_LENGTH = 25
+
+const ROWS = WINDOW_SKETCH ? 9 : 3
+const COLS = WINDOW_SKETCH ? 1 : 3
+const LINE_LENGTH = WINDOW_SKETCH ? 15 : 25
+const LINE_WEIGHT = WINDOW_SKETCH ? 2 : 3
 
 const TRANSFORMATIONS = {
   'X': ['X+YF+', 'XF+YF+', 'XX+YF+', 'F+Y', 'X++YF-F', '-FX-Y+', 'X+FX-Y', 'X+FX-FY', 
@@ -56,13 +60,13 @@ function getTransformation() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(WINDOW_SKETCH ? 390 : windowWidth, WINDOW_SKETCH ? 1215 : windowHeight);
   angleMode(DEGREES)
   colorMode(HSB)
 
   gridBackground()
 
-  strokeWeight(3)
+  strokeWeight(LINE_WEIGHT)
   for(let i = 0; i < NUM_SYSTEMS; i++){
     systems.push(initSystem(i))
   }
@@ -94,8 +98,8 @@ function initSystem(index) {
     axiom = `${newString}`
   }
 
-  let col = (index % 3)
-  let row = (index % 2)
+  let col = (index % COLS)
+  let row = (index % ROWS)
   let centerX = random(width * (col) / (COLS), width * (col + 1) / (COLS))
   let centerY = random(height * (row) / (ROWS), height * (row + 1) / (ROWS))
 
