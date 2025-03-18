@@ -9,14 +9,33 @@ let yIndex = 0
 let xLevel = 0
 let yLevel = 0
 
+let xIndexStart;
+let yIndexStart;
+let xLevelStart;
+let yLevelStart;
+
 function setup() {
-  createCanvas(1000, 600);
+  createCanvas(1052, 652);
   colorMode(HSB)
   strokeWeight(4)
   stroke(0, 0, 100)
 
   init()
   setupStitch()
+
+  yLevelStart = STITCHES[1].length-1
+  yIndexStart = STITCHES[1][yLevelStart].length-1
+
+  yLevel = yLevelStart
+  yIndex = yIndexStart
+
+  xLevelStart = 0
+  xIndexStart = 0
+
+  xLevel = xLevelStart
+  xIndex = xIndexStart
+
+  console.log("Level Length: ", STITCHES[1])
 
   background(240, 75, 50);
 }
@@ -114,9 +133,6 @@ function setupStitch() {
       }
     }
   }
-
-  console.log(SEED)
-  console.log(STITCHES)
 }
 
 function draw() {
@@ -125,17 +141,15 @@ function draw() {
 
   xIndex++
   if (xIndex >= STITCHES[0][xLevel].length) {
-    xIndex = 0;
+    xIndex = xIndexStart;
     xLevel++
   }
 
-  yIndex++
-  if (yIndex >= STITCHES[1][yLevel].length) {
-    yIndex = 0
-    yLevel++
+  yIndex--
+  if (yIndex < 0) {
+    yIndex = yIndexStart
+    yLevel--
   }
-
-  // console.log("x: ", xIndex, "y: ", yIndex)
 }
 
 function drawStitch(axis, level, index) {
