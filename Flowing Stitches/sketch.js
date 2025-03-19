@@ -14,17 +14,30 @@ let yIndexStart;
 let xLevelStart;
 let yLevelStart;
 
+let endX
+let endY
+let resetTimer
+
 function setup() {
-  createCanvas(1052, 652);
+  createCanvas(802, 602);
   colorMode(HSB)
   strokeWeight(4)
   stroke(0, 0, 100)
+  frameRate(8)
 
   init()
+}
+
+function init() {
+  SEED.sizeX = width / PIXEL_SCALE
+  SEED.sizeY = height / PIXEL_SCALE
+  SEED.dataX = getWolfram(SEED.sizeX, SEED.weightX, SEED.wDepthX)
+  SEED.dataY = getWolfram(SEED.sizeY, SEED.weightY, SEED.wDepthY)
+
   setupStitch()
 
-  yLevelStart = STITCHES[1].length-1
-  yIndexStart = STITCHES[1][yLevelStart].length-1
+  yLevelStart = STITCHES[1].length - 1
+  yIndexStart = STITCHES[1][yLevelStart].length - 1
 
   yLevel = yLevelStart
   yIndex = yIndexStart
@@ -35,16 +48,11 @@ function setup() {
   xLevel = xLevelStart
   xIndex = xIndexStart
 
-  console.log("Level Length: ", STITCHES[1])
+  endX = false
+  endY = false
+  resetTimer = 0;
 
   background(240, 75, 50);
-}
-
-function init() {
-  SEED.sizeX = width / PIXEL_SCALE
-  SEED.sizeY = height / PIXEL_SCALE
-  SEED.dataX = getWolfram(SEED.sizeX, SEED.weightX, SEED.wDepthX)
-  SEED.dataY = getWolfram(SEED.sizeY, SEED.weightY, SEED.wDepthY)
 }
 
 function getWolfram(size, weight, depth) {
@@ -57,7 +65,7 @@ function getWolfram(size, weight, depth) {
   for (let x = 0; x < depth; x++) {
     let nextRow = []
     nextRow.push(currentRow[0])
-    for (let i = 1; i < currentRow.length-1; i++) {
+    for (let i = 1; i < currentRow.length - 1; i++) {
       let left = currentRow[i - 1]
       let right = currentRow[i + 1]
       let center = currentRow[i]
@@ -94,6 +102,9 @@ function generateSeed(length, weight) {
 }
 
 function setupStitch() {
+  STITCHES[0].length = 0
+  STITCHES[1].length = 0
+
   for (let x = 0; x < SEED.sizeX; x++) {
     STITCHES[0].push([])
     if (SEED.dataX[x] === 0) {
@@ -136,8 +147,8 @@ function setupStitch() {
 }
 
 function draw() {
-  drawStitch(0, xLevel, xIndex)
-  drawStitch(1, yLevel, yIndex)
+  if (!endX) drawStitch(0, xLevel, xIndex)
+  if (!endY) drawStitch(1, yLevel, yIndex)
 
   xIndex++
   if (xIndex >= STITCHES[0][xLevel].length) {
@@ -150,9 +161,37 @@ function draw() {
     yIndex = yIndexStart
     yLevel--
   }
+
+  if (xLevel < 0 || xLevel >= STITCHES[0].length) {
+    endX = true
+    xLevel = xLevelStart
+  }
+  if (yLevel < 0 || yLevel >= STITCHES[1].length) {
+    endY = true
+    yLevel = yLevelStart
+  }
+  if (endX && endY) resetTimer++
+  if (resetTimer > 24) reset()
 }
 
 function drawStitch(axis, level, index) {
   const stitch = STITCHES[axis][level][index]
   line(stitch.x1, stitch.y1, stitch.x2, stitch.y2)
+}
+
+function mousePressed() {
+  const fs = fullscreen()
+  fullscreen(!fs);
+}
+
+function windowResized() {
+  const fs = fullscreen()
+  fs ? resizeCanvas(windowWidth, windowHeight) : resizeCanvas(802, 602)
+
+  reset()
+}
+
+function reset() {
+  clear()
+  init()
 }
