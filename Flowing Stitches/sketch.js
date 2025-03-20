@@ -1,5 +1,5 @@
 const PIXEL_SCALE = 25
-const SEED = { sizeX: 0, sizeY: 0, dataX: [], dataY: [], weightX: 0.5, weightY: 0.5, wDepthX: 3, wDepthY: 3, }
+const SEED = { sizeX: 0, sizeY: 0, dataX: [], dataY: [], weightX: 0.5, weightY: 0.5, wDepthX: 30, wDepthY: 30, }
 const STITCHES = [[], []]
 
 const ruleTable = [0, 1, 1, 1, 1, 0, 0, 0]; // Rule 30
@@ -23,7 +23,7 @@ function setup() {
   colorMode(HSB)
   strokeWeight(4)
   stroke(0, 0, 100)
-  frameRate(8)
+  frameRate(12)
 
   init()
 }
@@ -31,6 +31,8 @@ function setup() {
 function init() {
   SEED.sizeX = width / PIXEL_SCALE
   SEED.sizeY = height / PIXEL_SCALE
+  SEED.wDepthX = floor(random(3, 60))
+  SEED.wDepthY = floor(random(3, 60))
   SEED.dataX = getWolfram(SEED.sizeX, SEED.weightX, SEED.wDepthX)
   SEED.dataY = getWolfram(SEED.sizeY, SEED.weightY, SEED.wDepthY)
 
@@ -52,7 +54,7 @@ function init() {
   endY = false
   resetTimer = 0;
 
-  background(240, 75, 50);
+  drawBackground()
 }
 
 function getWolfram(size, weight, depth) {
@@ -82,6 +84,13 @@ function getWolfram(size, weight, depth) {
     })
   }
   return finalRow
+}
+
+function drawBackground() {
+  let binary = getWolfram(9, 0.5, 2).join('')
+  let parsed = parseInt(binary, 2)
+  let h = floor(map(parsed, 0, 512, 130, 325))
+  background(h, 75, 80)
 }
 
 function getState(a, b, c) {
