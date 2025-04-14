@@ -2,7 +2,16 @@ const PIXEL_SCALE = 25
 const SEED = { sizeX: 0, sizeY: 0, dataX: [], dataY: [], weightX: 0.5, weightY: 0.5, wDepthX: 30, wDepthY: 30, ruleTable: [], }
 const STITCHES = [[], []]
 
-const ruleTable = [[0, 1, 1, 1, 1, 0, 0, 0]]; // Rule 30
+// Rules: 30, 54, 150, 60, 62, 90, 122
+const ruleTable = [
+  [0, 1, 1, 1, 1, 0, 0, 0], 
+  [0, 0, 1, 1, 0, 1, 1, 0], 
+  [1, 0, 0, 1, 0, 1, 1, 0], 
+  [0, 0, 1, 1, 1, 1, 0, 0],
+  [0, 0, 1, 1, 1, 1, 1, 0],
+  [0, 1, 0, 1, 1, 0, 1, 0],
+  [0, 1, 1, 1, 1, 0, 1, 0]
+];
 
 let xIndex = 0
 let yIndex = 0
@@ -30,6 +39,7 @@ function setup() {
 
 function init() {
   SEED.ruleTable = ruleTable[floor(random(ruleTable.length))]
+  console.log(SEED.ruleTable)
 
   SEED.sizeX = width / PIXEL_SCALE
   SEED.sizeY = height / PIXEL_SCALE
