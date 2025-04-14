@@ -101,8 +101,29 @@ function getWolfram(size, weight, depth) {
 function drawBackground() {
   let binary = getWolfram(9, 0.5, 2).join('')
   let parsed = parseInt(binary, 2)
-  let h = floor(map(parsed, 0, 512, 130, 325))
-  background(h, 75, 80)
+  let h = floor(map(parsed, 0, 512, 140, 290))
+  let s = 75
+  let b = 80
+  background(h, s, b)
+
+  // circles 
+  let numCircles = ceil(random(100, 500))
+  for(let i = 0; i < numCircles; i++) {
+    let x = random(width)
+    let y = random(height)
+    let circleWidth = random(75, 250)
+    let hueOffset = floor(random(-20, 20))
+    let saturationOffset = floor(random(-25, 25))
+    let brightnessOffset = floor(random(-20, 5))
+    let alpha = 0.25
+    let alphaOffset = floor(random(-0.1, 0.1))
+
+    let fillColor = color(h + hueOffset, s + saturationOffset, b + brightnessOffset, alpha + alphaOffset)
+    fill(fillColor)
+    stroke(h + hueOffset, s + saturationOffset, b / 2, alpha + alphaOffset)
+    strokeWeight(2)
+    circle(x, y, circleWidth)
+  }
 }
 
 function getState(a, b, c) {
@@ -196,6 +217,10 @@ function draw() {
 }
 
 function drawStitch(axis, level, index) {
+  strokeWeight(4)
+  stroke(0, 0, 100)
+  blendMode(BLEND)
+
   const stitch = STITCHES[axis][level][index]
   line(stitch.x1, stitch.y1, stitch.x2, stitch.y2)
 }
