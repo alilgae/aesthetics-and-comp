@@ -1,8 +1,8 @@
 const PIXEL_SCALE = 25
-const SEED = { sizeX: 0, sizeY: 0, dataX: [], dataY: [], weightX: 0.5, weightY: 0.5, wDepthX: 30, wDepthY: 30, }
+const SEED = { sizeX: 0, sizeY: 0, dataX: [], dataY: [], weightX: 0.5, weightY: 0.5, wDepthX: 30, wDepthY: 30, ruleTable: [], }
 const STITCHES = [[], []]
 
-const ruleTable = [0, 1, 1, 1, 1, 0, 0, 0]; // Rule 30
+const ruleTable = [[0, 1, 1, 1, 1, 0, 0, 0]]; // Rule 30
 
 let xIndex = 0
 let yIndex = 0
@@ -29,6 +29,8 @@ function setup() {
 }
 
 function init() {
+  SEED.ruleTable = ruleTable[floor(random(ruleTable.length))]
+
   SEED.sizeX = width / PIXEL_SCALE
   SEED.sizeY = height / PIXEL_SCALE
   SEED.wDepthX = floor(random(3, 60))
@@ -96,7 +98,7 @@ function drawBackground() {
 function getState(a, b, c) {
   let index = (a << 2) | (b << 1) | c;
 
-  return ruleTable[index];
+  return SEED.ruleTable[index];
 }
 
 
