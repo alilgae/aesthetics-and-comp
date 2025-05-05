@@ -61,7 +61,7 @@ function draw() {
 
         if (p.class === 'person') {
           personInFrame = true
-          console.log("detected personInFrame")
+          // console.log("detected personInFrame")
         }
         else {
           personInFrame = false
@@ -98,7 +98,7 @@ function draw() {
 }
 
 function austinJumpscare() {
-  console.log("austin")
+  // console.log("austin")
   austinLayer.clear()
   austinLayer.push()
   austinLayer.translate(austinX, austinY)
