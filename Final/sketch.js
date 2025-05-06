@@ -4,6 +4,9 @@ let fragShader;
 
 let dog;
 let webcam;
+let austin;
+let travis;
+let schwartz;
 let activeVisual
 let timerActive = true
 let shaderTimer = 0;
@@ -12,7 +15,10 @@ let timerModifier = 1;
 function preload() {
   vertexShader = loadStrings('shader.vert');
   fragShader = loadStrings('shader.frag');
-  dog = loadImage('Shorkie.jpg')
+  dog = loadImage('Shorkie.jpg');
+  austin = loadImage('austin.jpg');
+  travis = loadImage('travis.jpg');
+  schwartz = loadImage('schwartz.jpg');
 }
 
 function setup() {
@@ -61,5 +67,8 @@ function mouseClicked() {
 function keyPressed() {
   if (key === '1') activeVisual = dog
   else if (key === '2') activeVisual = webcam
+  else if (key === '3') activeVisual = austin
+  else if (key === '4') activeVisual = travis
+  else if (key === '5') activeVisual = schwartz
   else if (key === ' ') timerActive = !timerActive
 }
