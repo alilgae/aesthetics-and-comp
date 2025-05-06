@@ -1,10 +1,13 @@
 let shaderProgram;
 let vertexShader;
 let fragShader;
+
 let dog;
 let webcam;
 let activeVisual
-let timeOffset = 0;
+let timerActive = true
+let shaderTimer = 0;
+let timerModifier = 1;
 
 function preload() {
   vertexShader = loadStrings('shader.vert');
@@ -32,23 +35,31 @@ function draw() {
   background(0);
   // image(webcam, -width/2, -height/2, width, height)
 
+  if (timerActive) {
+    if (keyIsDown(LEFT_ARROW)) timerModifier = 0.5
+    else if (keyIsDown(RIGHT_ARROW)) timerModifier = 2
+    else timerModifier = 1
+
+    shaderTimer += (deltaTime * timerModifier);
+  }
+
   shader(shaderProgram);
-  
-  // shaderProgram.setUniform('sampledImage', webcam)
+
   shaderProgram.setUniform('sampledImage', activeVisual)
-  shaderProgram.setUniform('time', (millis() - timeOffset) / 1000);
+  shaderProgram.setUniform('time', shaderTimer / 1000);
   shaderProgram.setUniform('resolution', [width, height]);
   shaderProgram.setUniform('mouseCoords', [mouseX, mouseY])
   // shaderProgram.setUniform('mouseCoords', [width/2, height/2])
-  
-  rect(-width/2, -height/2, width, height); // drawing the shader
+
+  rect(-width / 2, -height / 2, width, height); // drawing the shader
 }
 
 function mouseClicked() {
-  timeOffset = millis();
+  shaderTimer = 0;
 }
 
 function keyPressed() {
   if (key === '1') activeVisual = dog
   else if (key === '2') activeVisual = webcam
+  else if (key === ' ') timerActive = !timerActive
 }
